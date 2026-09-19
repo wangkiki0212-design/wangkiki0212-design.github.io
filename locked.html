@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KIKI® PORTFOLIO ｜ 私密作品集</title>
+<meta name="robots" content="noindex" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #0d0d0d; }
+  body {
+    display: flex; align-items: center; justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  }
+  .wrap { text-align: center; padding: 40px 28px; max-width: 340px; width: 86%; }
+  .brand { color: #fff; font-size: 15px; letter-spacing: 6px; font-weight: 600; margin-bottom: 6px; }
+  .sub { color: #888; font-size: 12px; letter-spacing: 2px; margin-bottom: 34px; }
+  input {
+    width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff;
+    font-size: 15px; padding: 13px 16px; border-radius: 8px; outline: none;
+    text-align: center; letter-spacing: 2px;
+  }
+  input:focus { border-color: #666; }
+  .err { color: #e05a5a; font-size: 12px; height: 18px; margin-top: 10px; }
+  button {
+    width: 100%; background: #fff; color: #0d0d0d; border: none; font-size: 14px;
+    font-weight: 600; padding: 13px 0; border-radius: 8px; cursor: pointer;
+    letter-spacing: 4px; margin-top: 6px;
+  }
+  button:active { opacity: .8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">KIKI&reg; PORTFOLIO</div>
+  <div class="sub">私 密 作 品 集</div>
+  <input id="pw" type="password" placeholder="请输入访问密码" autocomplete="off" />
+  <div class="err" id="err"></div>
+  <button id="go" type="button">进 入</button>
+</div>
+<script>
+(function () {
+  var PASS = "kiki2026"; // ← 修改密码只改这里
+  var KEY = "kiki_gate_ok";
+
+  function target() {
+    var m = location.search.match(/[?&]r=([^&]*)/);
+    var r = m ? decodeURIComponent(m[1]) : "/";
+    if (!r || r.indexOf("/") !== 0 || r.indexOf("//") === 0) r = "/";
+    return r;
+  }
+
+  function unlock() {
+    var v = document.getElementById("pw").value;
+    if (v === PASS) {
+      try { localStorage.setItem(KEY, PASS); } catch (e) {}
+      location.replace(target());
+    } else {
+      document.getElementById("err").textContent = "密码不正确，请重试";
+      var el = document.getElementById("pw");
+      el.value = "";
+      el.focus();
+    }
+  }
+
+  document.getElementById("go").addEventListener("click", unlock);
+  document.getElementById("pw").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") unlock();
+  });
+  setTimeout(function () { document.getElementById("pw").focus(); }, 100);
+
+  // 已通过验证则直接跳回目标页
+  try {
+    if (localStorage.getItem(KEY) === PASS) location.replace(target());
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
